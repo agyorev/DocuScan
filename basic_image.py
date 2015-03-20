@@ -8,7 +8,13 @@ import numpy as np
 
 class BasicImage(object):
     def __init__(self, _image_path):
-        self.image = cv2.imread(_image_path)
+        if isinstance(_image_path, basestring) == True:
+            self.image = cv2.imread(_image_path)
+        else:
+            self.image = _image_path
+
+    def get(self):
+        return self.image
 
     def get_size(self):
         return self.image.shape
@@ -30,7 +36,8 @@ class BasicImage(object):
         else:
             return self.image
 
-        self.image = cv2.resize(self.image, dim, interpolation = cv2.INTER_AREA)
+        result = cv2.resize(self.image, dim, interpolation = cv2.INTER_AREA)
+        return result
 
     def rotate(self, _angle):
         (height, width) = self.image.shape[:2]
@@ -71,8 +78,10 @@ class BasicImage(object):
         # combining rotation and translation
         M = (np.matrix(T) * np.matrix(M))[0:2, :]
 
-        self.image = cv2.warpAffine(self.image, M, (new_width, new_height), flags = cv2.INTER_LINEAR)
+        result = cv2.warpAffine(self.image, M, (new_width, new_height), flags = cv2.INTER_LINEAR)
+        return result
 
     def crop(self, _top, _bot, _left, _right):
-        self.image = self.image[_top:_bot + 1, _left:_right + 1]
+        result = self.image[_top:_bot + 1, _left:_right + 1]
+        return result
 
