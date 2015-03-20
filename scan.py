@@ -9,6 +9,7 @@ import argparse
 
 from transform import Transform
 from basic_image import BasicImage
+from combine_images import CombineImages
 
 """ Arugment Parser """
 ap = argparse.ArgumentParser()
@@ -47,26 +48,26 @@ ratio      = original.shape[0] / float(HEIGHT)
 image      = bi.resize('H', HEIGHT)
 total_area = image.shape[0] * image.shape[1]
 
-BasicImage(image).show()
+#BasicImage(image).show()
 
 """ Step 1: Edge Detection """
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # get the grayscale image
 gray = cv2.bilateralFilter(gray, 11, 17, 17)
 #gray = cv2.GaussianBlur(gray, (3, 3), 0) # with a bit of blurring
-BasicImage(gray).show()
+#BasicImage(gray).show()
 
 # automatic Canny edge detection thredhold computation
 high_thresh, thresh_im = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 low_thresh = high_thresh / 2.0
 
 edged = cv2.Canny(gray, low_thresh, high_thresh) # detect edges (outlines) of the objects
-BasicImage(edged).show()
+#BasicImage(edged).show()
 
 # since some of the outlines are not exactly clear, we construct
 # and apply a closing kernel to close the gaps b/w white pixels
 kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (CLOSING_SIZE, CLOSING_SIZE))
 closed = cv2.morphologyEx(edged, cv2.MORPH_CLOSE, kernel)
-BasicImage(closed).show()
+#BasicImage(closed).show()
 
 """ Step 2: Finding Contours """
 (contours, _) = cv2.findContours(closed.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -93,14 +94,22 @@ for contour in contours:
         total += 1
 
 print 'Found %d books/papers in the image.' % total
-BasicImage(image).show()
+#BasicImage(image).show()
 
 """ Step 3: Apply a Perspective Transform and Threshold """
 for approx in approx_all:
     warped = Transform.get_box_transform(original, approx.reshape(4, 2) * ratio)
-    BasicImage(warped).show()
+    #BasicImage(warped).show()
 
-    warped = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
-    warped = cv2.medianBlur(warped, NOISE_REMOVAL_LEVEL)
-    warped = cv2.adaptiveThreshold(warped, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
-    BasicImage(warped).show()
+    scan_warped = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
+    scan_warped = cv2.medianBlur(scan_warped, NOISE_REMOVAL_LEVEL)
+    scan_warped = cv2.adaptiveThreshold(scan_warped, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+    #BasicImage(scan_warped).show()
+
+""" Displaying all intermediate steps into one image """
+top_row = CombineImages(300, original, gray)
+bot_row = CombineImages(300, closed, image)
+com_img = np.vstack((top_row, bot_row))
+BasicImage(com_img).show()
+
+BasicImage(CombineImages(700, warped, scan_warped)).show()
