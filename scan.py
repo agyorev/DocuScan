@@ -96,6 +96,12 @@ for contour in contours:
 print 'Found %d books/papers in the image.' % total
 #BasicImage(image).show()
 
+""" Displaying all intermediate steps into one image """
+top_row = CombineImages(300, original, gray)
+bot_row = CombineImages(300, closed, image)
+com_img = np.vstack((top_row, bot_row))
+BasicImage(com_img).show()
+
 """ Step 3: Apply a Perspective Transform and Threshold """
 for approx in approx_all:
     warped = Transform.get_box_transform(original, approx.reshape(4, 2) * ratio)
@@ -105,11 +111,4 @@ for approx in approx_all:
     scan_warped = cv2.medianBlur(scan_warped, NOISE_REMOVAL_LEVEL)
     scan_warped = cv2.adaptiveThreshold(scan_warped, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     #BasicImage(scan_warped).show()
-
-""" Displaying all intermediate steps into one image """
-top_row = CombineImages(300, original, gray)
-bot_row = CombineImages(300, closed, image)
-com_img = np.vstack((top_row, bot_row))
-BasicImage(com_img).show()
-
-BasicImage(CombineImages(700, warped, scan_warped)).show()
+    BasicImage(CombineImages(400, warped, scan_warped)).show()
