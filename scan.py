@@ -55,6 +55,7 @@ gray = cv2.bilateralFilter(gray, 11, 17, 17)
 #gray = cv2.GaussianBlur(gray, (3, 3), 0) # with a bit of blurring
 BasicImage(gray).show()
 
+# automatic Canny edge detection thredhold computation
 high_thresh, thresh_im = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 low_thresh = high_thresh / 2.0
 
