@@ -28,17 +28,26 @@ ap.add_argument('-n',
     required = False,
     default  = 0,
     help     = 'the level to which we remove noise and smaller details from the scan (default: 0, i.e. preserve everything')
+
+ap.add_argument('-c',
+    '--closing',
+    required = False,
+    default  = 3,
+    help     = 'the size of the closing element after applying the Canny edge detector')
 args         = vars(ap.parse_args())
 
 # Getting the user input
 HEIGHT              = int(args['height'])
 NOISE_REMOVAL_LEVEL = max(int(args['noise']) * 2 - 1, 0)
+CLOSING_SIZE        = int(args['closing'])
 bi                  = BasicImage(args['image'])
 
 original   = bi.get().copy()
 ratio      = original.shape[0] / float(HEIGHT)
 image      = bi.resize('H', HEIGHT)
 total_area = image.shape[0] * image.shape[1]
+
+BasicImage(image).show()
 
 """ Step 1: Edge Detection """
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # get the grayscale image
@@ -54,7 +63,7 @@ BasicImage(edged).show()
 
 # since some of the outlines are not exactly clear, we construct
 # and apply a closing kernel to close the gaps b/w white pixels
-kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (CLOSING_SIZE, CLOSING_SIZE))
 closed = cv2.morphologyEx(edged, cv2.MORPH_CLOSE, kernel)
 BasicImage(closed).show()
 
