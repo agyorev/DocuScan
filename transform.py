@@ -10,8 +10,9 @@ class Transform(object):
     def __init__(self):
         pass
 
-    def get_points_order(self, _points):
-        box        = np.zeros((4, 2), dtype='float64') # order will be: TL, TR, BR, BL
+    @staticmethod
+    def get_points_order(_points):
+        box        = np.zeros((4, 2), dtype='float32') # order will be: TL, TR, BR, BL
 
         coord_sum  = _points.sum(axis = 1)
         box[0]     = _points[np.argmin(coord_sum)]     # TL - has the min sum
@@ -23,8 +24,9 @@ class Transform(object):
 
         return box                                     # return the ordered coordinates
 
-    def get_box_transform(self, _image, _points):
-        init_box         = get_points_order(_points)
+    @staticmethod
+    def get_box_transform(_image, _points):
+        init_box         = Transform.get_points_order(_points)
         (tl, tr, br, bl) = init_box # get the correct order
 
         width_top    = np.sqrt(((tl[0] - tr[0]) ** 2) + ((tl[1] - tr[1]) ** 2)) # distance b/w TL and TR
@@ -40,7 +42,7 @@ class Transform(object):
             [max_width - 1, 0              ], # TR
             [max_width - 1, max_height - 1 ], # BR
             [            0, max_height - 1]], # BL
-            dtype='float64')
+            dtype='float32')
 
         M     = cv2.getPerspectiveTransform(init_box, dest_box)         # transformation matrix
         image = cv2.warpPerspective(_image, M, (max_width, max_height)) # apply the transform
