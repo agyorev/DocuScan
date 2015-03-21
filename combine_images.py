@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+
+__author__ = 'Aleksandar Gyorev'
+__email__  = 'a.gyorev@jacobs-university.de'
+
 import cv2
 import numpy as np
 
