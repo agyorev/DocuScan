@@ -15,6 +15,10 @@ Images from example runs can be found in the [results](./results) folder.
     $> python2.7 scan.py -i img/example10.jpg -H 400 -c 1 -n 2
 
 - Detection steps
+    1. Original image
+    2. Bilateral filter
+    3. Canny edges + Morphological closing
+    4. Contour detection
 
 ![example10](https://raw.githubusercontent.com/agyorev/DocuScan/master/results/example10_400_1.jpg)
 
