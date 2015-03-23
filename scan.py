@@ -35,6 +35,12 @@ ap.add_argument('-c',
     required = False,
     default  = 3,
     help     = 'the size of the closing element after applying the Canny edge detector')
+
+ap.add_argument('-s',
+    '--save',
+    action   = 'store_true',
+    default  = False,
+    help     = 'set the flag in order to save the extracted images to the current folder')
 args         = vars(ap.parse_args())
 
 # Getting the user input
@@ -103,7 +109,9 @@ com_img = np.vstack((top_row, bot_row))
 BasicImage(com_img).show()
 
 """ Step 3: Apply a Perspective Transform and Threshold """
+total = 0
 for approx in approx_all:
+    total += 1
     warped = Transform.get_box_transform(original, approx.reshape(4, 2) * ratio)
     #BasicImage(warped).show()
 
@@ -112,3 +120,10 @@ for approx in approx_all:
     scan_warped = cv2.adaptiveThreshold(scan_warped, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     #BasicImage(scan_warped).show()
     BasicImage(CombineImages(400, warped, scan_warped)).show()
+
+    # save the image
+    if args['save'] == True:
+        filename_color = 'scan%03d_color.jpg' % total
+        filename_scan  = 'scan%03d_scan.jpg' % total
+        BasicImage(warped).save(filename_color)
+        BasicImage(scan_warped).save(filename_scan)
