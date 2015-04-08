@@ -66,6 +66,14 @@ gray = cv2.bilateralFilter(gray, 11, 17, 17)
 high_thresh, thresh_im = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 low_thresh = high_thresh / 2.0
 
+# zero-parameter automatic Canny edge detection (method 2)
+# Vary the percentage thresholds that are determined (in practice 0.33 tends to give good approx. results)
+# A lower value of sigma  indicates a tighter threshold, whereas a larger value of sigma  gives a wider threshold.
+#sigma       = 0.33
+#v           = np.median(gray)
+#low_thresh  = int(max(0, (1.0 - sigma) * v))
+#high_thresh = int(min(255, (1.0 + sigma) * v))
+
 edged = cv2.Canny(gray, low_thresh, high_thresh) # detect edges (outlines) of the objects
 #BasicImage(edged).show()
 
