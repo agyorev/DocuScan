@@ -153,7 +153,6 @@ if args['auto'] == False:
 
     scan()
 else:
-    print range(650, 300, -50)
     for auto_height in xrange(min(650, bi.get().shape[0]), 299, -50):
         for auto_closing in xrange(6, 1, -1):
             HEIGHT       = auto_height
