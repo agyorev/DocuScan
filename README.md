@@ -12,7 +12,19 @@ An OpenCV project for detecting books, papers, or any rectangular objects in an 
 Images from example runs can be found in the [results](./results) folder.
 
 #### Exampes
+
+##### Automaticly (heuristically) setting the argument parameters (height and closing) to find the best fit. 
+We have set a noise removal level of 3.
+
+
+    $> python2.7 scan.py -i img/example9.jpg -a -n 3
+
+
+##### Manual argument parameter setting
+
+
     $> python2.7 scan.py -i img/example10.jpg -H 400 -c 1 -n 2
+
 
 - Detection steps
     1. Original image
